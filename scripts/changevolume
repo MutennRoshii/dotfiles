@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# You can call this script like this:
+# changevolume up
+# changevolume down
+# changevolume mute
+
+function send_notification() {
+  dunstify -a "changevolume" -i $icon_d -h int:value:"$volume" "$1" -u low -r 9993 -t 2000
+}
+
+function get_icons() {
+  volume=$(pamixer --get-volume)
+  [[ $volume -le 150 && $volume -ge 67 ]] && icon_p=" " && icon_d="volume-high.svg"
+  [[ $volume -le 66 && $volume -ge 34 ]] && icon_p="墳 " && icon_d="volume-medium.svg"
+  [[ $volume -le 33 && $volume -ge 0 ]] && icon_p=" " && icon_d="volume-low.svg"
+  [ $(pamixer --get-mute) == "true" ] && icon_p="婢 " && icon_d="volume-muted.svg"
+  icon_d=$custom_path$icon_d
+}
+
+custom_path="/home/roshi/.local/share/icons/Dunst-Icons/"
+volume=$(pamixer --get-volume)
+
+case $1 in
+up)
+  pamixer -u
+  pamixer -i 5 --allow-boost --set-limit 150
+  get_icons
+  send_notification "Volume: ${volume}%"
+  ;;
+down)
+  pamixer -u
+  pamixer -d 5 --allow-boost
+  get_icons
+  send_notification "Volume: ${volume}%"
+  ;;
+mute)
+  pamixer -t
+  get_icons
+  [ $(pamixer --get-mute) == "true" ] && send_notification "Muted" ||
+    send_notification "Volume: ${volume}%"
+  ;;
+*)
+  get_icons
+  printf "%s" "$icon_p$volume%"
+  ;;
+esac

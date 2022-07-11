@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# You can call this script like this:
+# changebrightness up
+# changebrightness down
+
+function get_brightness() {
+  brightness=$(brightnessctl --device='intel_backlight' get)
+  brightness=$((brightness * 100 / 1666))
+}
+
+function send_notification() {
+  get_brightness
+  dunstify -a "changebrightness" -i "$icon_d" -h int:value:"$brightness" "$1" -u low -r 5555 -t 2000
+}
+
+function get_icons() {
+  get_brightness
+  [[ $brightness -le 100 && $brightness -ge 67 ]] && icon_p=" " && icon_d="brightness-high.svg"
+  [[ $brightness -le 66 && $brightness -ge 34 ]] && icon_p=" " && icon_d="brightness-medium.svg"
+  [[ $brightness -le 33 && $brightness -ge 0 ]] && icon_p=" " && icon_d="brightness-low.svg"
+  icon_d=$custom_path$icon_d
+}
+
+custom_path="/home/roshi/.local/share/icons/Dunst-Icons/"
+get_brightness
+
+case $1 in
+up)
+  brightnessctl --device='intel_backlight' set +5%
+  get_icons
+  send_notification "Brightness: ${brightness}%"
+  ;;
+down)
+  brightnessctl --device='intel_backlight' set 5%-
+  get_icons
+  send_notification "Brightness: ${brightness}%"
+  ;;
+*)
+  get_icons
+  printf "%s" "$icon_p$brightness%"
+  ;;
+esac
