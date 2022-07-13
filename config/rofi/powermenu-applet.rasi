@@ -5,7 +5,7 @@ configuration {
 	sidebar-mode: 					false;
 }
 
-@import "colors-powermenu.rasi"
+@import "colors-main.rasi"
 
 * {
     background-color:               @background;

@@ -1,3 +1,4 @@
+from sqlite3 import Cursor
 from typing import List
 from libqtile import qtile
 from libqtile import bar, layout, widget
@@ -12,14 +13,14 @@ import time
 
 mod = 'mod4'
 alt = 'mod1'
-browser = 'firefox'
 terminal = 'kitty'
+browser = 'firefox'
 home = os.path.expanduser('~')
-scripts = os.path.expanduser('~/.local/bin/scripts/')
 rofi = os.path.expanduser('~/.config/rofi/')
+scripts = os.path.expanduser('~/.local/bin/scripts/')
+
 
 # Get the number of connected screens
-
 
 def get_monitors():
     xr = subprocess.check_output(
@@ -36,8 +37,8 @@ def set_screens(event):
     subprocess.run("screenlayout.sh")
     qtile.restart()
 
-# When application launched automatically focus it's group
 
+# When application launched automatically focus it's group
 
 @hook.subscribe.client_new
 def modify_window(client):
@@ -49,8 +50,8 @@ def modify_window(client):
             targetgroup.cmd_toscreen(toggle=False)
             break
 
-# Hook to fallback to the first group with windows when last window of group is killed
 
+# Hook to fallback to the first group with windows when last window of group is killed
 
 @hook.subscribe.client_killed
 def fallback(window):
@@ -73,8 +74,8 @@ def slight_delay(window):
 def autostart():
     subprocess.Popen([home + '/.config/qtile/autostart.sh'])
 
-# Add th, nd or st to the date - use custom_date in text box
 
+# Add th, nd or st to the date - use custom_date in text box
 
 def suffix(d):
     return 'th' if 11 <= d <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(d % 10, 'th')
@@ -88,25 +89,42 @@ def custom_date():
     return custom_strftime('%A {S} %B %Y - %H:%M', dt.now())
 
 
-MYCOLORS = [
-    '#141c21',
-    '#fb4934',
-    '#A9C03F',
-    '#FDD835',
-    '#4DD0E1',
-    '#F75176',
-    '#00B19F',
-    '#eee8d5'
-]
+COLORS = {
+    "Rosewater":    "#f5e0dc",
+    "Flamingo":     "#f2cdcd",
+    "Pink":         "#f5c2e7",
+    "Mauve":        "#cba6f7",
+    "Red":          "#f38ba8",
+    "Maroon":       "#eba0ac",
+    "Peach":        "#fab387",
+    "Yellow":       "#f9e2af",
+    "Green":        "#a6e3a1",
+    "Teal":         "#94e2d5",
+    "Sky":          "#89dceb",
+    "Sapphire":     "#74c7ec",
+    "Blue":         "#89b4fa",
+    "Lavender":     "#b4befe",
+    "Text":         "#cdd6f4",
+    "Subtext1":     "#bac2de",
+    "Subtext0":     "#a6adc8",
+    "Overlay2":     "#9399b2",
+    "Overlay1":     "#7f849c",
+    "Overlay0":     "#6c7086",
+    "Surface2":     "#585b70",
+    "Surface1":     "#45475a",
+    "Surface0":     "#313244",
+    "Base":         "#1e1e2e",
+    "Mantle":       "#181825",
+    "Darkblue":     "#091a32",
+    "Crust":        "#11111b"
+}
 
-BLACK = MYCOLORS[0]
-RED = MYCOLORS[1]
-GREEN = MYCOLORS[2]
-YELLOW = MYCOLORS[3]
-BLUE = MYCOLORS[4]
-MAGENTA = MYCOLORS[5]
-CYAN = MYCOLORS[6]
-WHITE = MYCOLORS[7]
+COLOR_1 = "#11111b"
+COLOR_2 = "#f38ba8"
+COLOR_3 = "#fab387"
+COLOR_4 = "#091a32"
+COLOR_5 = "#1e1e2e"
+COLOR_6 = "#45475a"
 
 keys = [
 
@@ -192,7 +210,7 @@ keys = [
 ]
 
 # Groups with matches
-# Japanese Kanji: 一二三四五六七八九
+# Japanese Kanji: 一二三四五六七八九            
 
 workspaces = [
     {"name": " ", "key": "ampersand",  "matches": [
@@ -235,8 +253,8 @@ for i in range(monitors):
 layout_theme = {
     "border_width":     2,
     "margin":           8,
-    "border_focus":     MAGENTA,
-    "border_normal":    BLACK
+    "border_focus":     COLORS["Mauve"],
+    "border_normal":    COLORS["Crust"]
 }
 
 layouts = [
@@ -245,43 +263,48 @@ layouts = [
     layout.Max(),
     layout.Bsp(**layout_theme),
     layout.Floating(**layout_theme),
-
-    # layout.Matrix(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.Stack(num_stacks=2, **layout_theme),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
 ]
 
 widget_defaults = dict(
-    font='JetBrainsMono Nerd Font',
-    fontsize='18',
+    font='JetBrainsMono Medium Nerd Font',
+    fontsize=17,
     padding=3,
 )
-extension_defaults = widget_defaults.copy()
+
+pl_defaults = dict(
+    font='JetBrainsMono Nerd Font',
+    fontsize=28,
+    padding=0
+)
+
+group_defaults = dict(
+    font='JetBrainsMono Nerd Font',
+    fontsize=28,
+    padding=0
+)
 
 screens = []
 
 # ZeroNet.svg
-menu_svg = '~/.local/share/icons/Papirus-Dark/16x16/apps/'
+menu_svg = '/usr/share/icons/Papirus-Dark/16x16/apps/'
 menu_svg += 'void-wizard.svg'
 
 widget_mirror = [
     widget.CheckUpdates(
         **widget_defaults,
+        background=COLOR_3,
+        foreground=COLOR_5,
+        colour_have_updates=COLOR_5,
         update_interval=1800,
-        distro='Arch',
         custom_command='paru -Qu',
         display_format=' {updates}',
-        colour_have_updates=GREEN,
-        execute='kitty -e paru',
+        execute=terminal + ' -e paru',
+        distro='Arch',
     ),
-    widget.Spacer(length=5),
     widget.GenPollText(
         **widget_defaults,
+        background=COLOR_3,
+        foreground=COLOR_5,
         update_interval=None,
         func=lambda: subprocess.check_output(
             scripts + "changebrightness").decode(),
@@ -289,9 +312,10 @@ widget_mirror = [
             'Button5': lambda: qtile.cmd_spawn(scripts + "changebrightness down", shell=True),
             'Button4': lambda: qtile.cmd_spawn(scripts + "changebrightness up", shell=True)}
     ),
-    widget.Spacer(length=5),
     widget.GenPollText(
         **widget_defaults,
+        background=COLOR_3,
+        foreground=COLOR_5,
         update_interval=None,
         func=lambda: subprocess.check_output(
             scripts + "changevolume").decode(),
@@ -300,126 +324,201 @@ widget_mirror = [
             'Button2': lambda: qtile.cmd_spawn(scripts + "changevolume mute", shell=True),
             'Button4': lambda: qtile.cmd_spawn(scripts + "changevolume up", shell=True)}
     ),
-    widget.Spacer(length=5),
     widget.GenPollText(
         **widget_defaults,
+        background=COLOR_3,
+        foreground=COLOR_5,
         update_interval=1,
         func=lambda: subprocess.check_output(scripts + "battery.py").decode(),
         mouse_callbacks={
             'Button1': lambda: qtile.cmd_spawn(scripts + "battery.py --c left-click", shell=True)}
     ),
-    widget.Spacer(length=5),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_3,
+        foreground=COLOR_2,
+    ),
     widget.GenPollText(
         **widget_defaults,
+        background=COLOR_2,
+        foreground=COLOR_5,
         update_interval=1,
         func=lambda: subprocess.check_output(scripts + "network.sh").decode(),
         mouse_callbacks={
-            'Button1': lambda: qtile.cmd_spawn(scripts + "network.sh ShowInfo", shell=True),
+            'Button1': lambda: qtile.cmd_spawn(rofi + "network-applet.sh", shell=True),
             'Button3': lambda: qtile.cmd_spawn(rofi + 'wifi-menu.sh', shell=True)}
     ),
     widget.TextBox(
         **widget_defaults,
-        text='  ',
+        background=COLOR_2,
+        foreground=COLOR_5,
+        text=' ',
         mouse_callbacks={
             'Button1': lazy.spawn("/home/roshi/.config/rofi/powermenu-applet.sh")}
-    )
+    ),
+    widget.Spacer(
+        length=5,
+        background=COLOR_2
+    ),
 ]
 
 widgets_1 = [
-    widget.Spacer(length=10),
+    widget.Spacer(
+        length=10,
+        background=COLOR_2
+    ),
     widget.Image(
+        background=COLOR_2,
         filename=menu_svg,
         rotate=270,
         mouse_callbacks={
             'Button1': lazy.spawn(rofi + "launcher.sh")}
     ),
-    widget.Spacer(length=5),
-    widget.GroupBox(
-        borderwidth=2,
-        disable_drag=True,
-        active=WHITE,
-        inactive='#969696',
-        this_current_screen_border=MAGENTA,
-        this_screen_border=MAGENTA,
-        font='JetBrainsMono Nerd Font',
-        fontsize=26,
-        highlight_method='line',
-        highlight_color=['141c2100', '141c2100']
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_3,
+        foreground=COLOR_2
     ),
-    widget.Spacer(length=5),
-    widget.CurrentLayoutIcon(scale=0.7),
+    widget.GroupBox(
+        **group_defaults,
+        disable_drag=True,
+        highlight_method='line',
+        borderwidth=3,
+        active=COLOR_5,
+        inactive=COLOR_6,
+        background=COLOR_3,
+        this_current_screen_border=COLOR_5,
+        this_screen_border=COLOR_5,
+        highlight_color=[COLOR_3, COLOR_3]
+    ),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_4,
+        foreground=COLOR_3
+    ),
+    widget.CurrentLayoutIcon(
+        scale=0.80,
+        background=COLOR_4,
+    ),
     widget.CurrentLayout(
-        font='JetBrainsMono Nerd Font',
-        fontsize='16',
-        padding=3,),
-    widget.Prompt(**widget_defaults),
+        **widget_defaults,
+        background=COLOR_4,
+    ),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_1,
+        foreground=COLOR_4
+    ),
     widget.Spacer(),
     widget.GenPollText(
+        font='JetBrainsMono Medium Nerd Font',
+        fontsize='18',
+        padding=3,
         func=custom_date,
         update_interval=1,
-        font='JetBrainsMono Nerd Font',
-        fontsize='16',
-        padding=3,
     ),
     widget.Spacer(),
     widget.WidgetBox(
-        widgets=[widget.Systray()],
-        font='JetBrainsMono Nerd Font',
-        fontsize=32,
-        foreground='#9e4174',
-        close_button_location='left',
-        text_closed="",
-        text_open=""),
+        **pl_defaults,
+        widgets=[
+            widget.Spacer(length=5, background=COLOR_4),
+            widget.Systray(background=COLOR_4)
+        ],
+        background=COLOR_1,
+        foreground=COLOR_4,
+        text_closed="",
+        text_open=""),
+    widget.Spacer(
+        length=5,
+        background=COLOR_4,
+    ),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_4,
+        foreground=COLOR_3,
+    ),
 ] + widget_mirror
 
 widgets_2 = [
-    widget.Spacer(length=10),
+    widget.Spacer(
+        length=10,
+        background=COLOR_2
+    ),
     widget.Image(
+        background=COLOR_2,
         filename=menu_svg,
         rotate=270,
         mouse_callbacks={
             'Button1': lazy.spawn(rofi + "launcher.sh")}
     ),
-    widget.Spacer(length=5),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_3,
+        foreground=COLOR_2
+    ),
     widget.GroupBox(
-        borderwidth=2,
+        **group_defaults,
         disable_drag=True,
-        active=WHITE,
-        inactive='#969696',
-        this_current_screen_border=MAGENTA,
-        this_screen_border=MAGENTA,
-        font='JetBrainsMono Nerd Font',
-        fontsize=26,
         highlight_method='line',
-        highlight_color=['141c2100', '141c2100']
+        borderwidth=3,
+        active=COLOR_5,
+        inactive=COLOR_6,
+        background=COLOR_3,
+        this_current_screen_border=COLOR_5,
+        this_screen_border=COLOR_5,
+        highlight_color=[COLOR_3, COLOR_3]
     ),
-    widget.Spacer(length=5),
-    widget.CurrentLayoutIcon(scale=0.7),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_4,
+        foreground=COLOR_3
+    ),
+    widget.CurrentLayoutIcon(
+        scale=0.80,
+        background=COLOR_4,
+    ),
     widget.CurrentLayout(
-        font='JetBrainsMono Nerd Font',
-        fontsize='16',
-        padding=3,
+        **widget_defaults,
+        background=COLOR_4,
     ),
-    widget.Prompt(**widget_defaults),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_1,
+        foreground=COLOR_4
+    ),
     widget.Spacer(),
     widget.GenPollText(
+        font='JetBrainsMono Medium Nerd Font',
+        fontsize='18',
+        padding=3,
         func=custom_date,
         update_interval=1,
-        font='JetBrainsMono Nerd Font',
-        fontsize='16',
-        padding=3,
     ),
     widget.Spacer(),
+    widget.TextBox(
+        **pl_defaults,
+        fmt='',
+        background=COLOR_1,
+        foreground=COLOR_3,
+    ),
 ] + widget_mirror
 
 
 for monitor in range(monitors):
     if monitor == 0:
         screens.append(
-            Screen(top=bar.Bar(widgets_1, 30, background="#141c21", margin= [4, 8, 0, 8])))
+            Screen(top=bar.Bar(widgets_1, 30, background=COLOR_1, margin=0)))  # [4, 8, 0, 8]
     else:
         screens.append(
-            Screen(top=bar.Bar(widgets_2, 30, background="#141c21", margin= [4, 8, 0, 8])))
+            Screen(top=bar.Bar(widgets_2, 30, background=COLOR_1, margin=0)))
 
 
 # Drag floating layouts.

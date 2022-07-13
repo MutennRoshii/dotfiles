@@ -24,7 +24,7 @@ htop
 intel-ucode
 kitty
 kodi
-lxappearance
+lxappearance-gtk3
 ly
 make
 man-db
@@ -50,6 +50,7 @@ qt5ct
 qtile
 ranger
 ripgrep
+sassc
 scrot
 sd
 sxiv
