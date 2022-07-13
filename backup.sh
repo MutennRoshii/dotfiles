@@ -10,13 +10,13 @@ cp -r /home/roshi/.config/qtile ./config/
 cp -r /home/roshi/.config/rofi ./config/
 
 # Icon Backups
-cp -r /home/roshi/.local/share/icons/* ./icons/
-cp -r /usr/share/icons/Simp1e-Catppuccin ./icons/
-cp -r /usr/share/icons/Papirus ./icons/
-cp -r /usr/share/icons/Papirus-Dark ./icons/
+# cp -r /home/roshi/.local/share/icons/* ./icons/
+# cp -r /usr/share/icons/Simp1e-Catppuccin ./icons/
+# cp -r /usr/share/icons/Papirus ./icons/
+# cp -r /usr/share/icons/Papirus-Dark ./icons/
 
 # Theme Backups
-cp -r /usr/share/themes/Catppuccin-pink ./themes/
+# cp -r /usr/share/themes/Catppuccin-pink ./themes/
 
 # Script Backups
 cp /home/roshi/.local/bin/scripts/* ./scripts/
