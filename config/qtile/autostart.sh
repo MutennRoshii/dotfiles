@@ -18,7 +18,8 @@ fi
 # Compositor
 if cmd_exist picom ; then
     __kill picom
-    __start picom
+    # __start picom
+    picom --experimental-backends -b
 fi
 
 # Authentication dialog

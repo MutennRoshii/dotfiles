@@ -1,13 +1,12 @@
 #!/bin/bash
 
 # Config Backups
-cp -r /home/roshi/.config/dunst ./config/
-cp -r /home/roshi/.config/kitty ./config/
-cp -r /home/roshi/.config/nvim ./config/
-cp -r /home/roshi/.config/obsidian ./config/
-cp -r /home/roshi/.config/picom ./config/
-cp -r /home/roshi/.config/qtile ./config/
-cp -r /home/roshi/.config/rofi ./config/
+cp -ri /home/roshi/.config/dunst ./config/
+cp -ri /home/roshi/.config/kitty ./config/
+cp -ri /home/roshi/.config/nvim ./config/
+cp -ri /home/roshi/.config/picom ./config/
+cp -ri /home/roshi/.config/qtile ./config/
+cp -ri /home/roshi/.config/rofi ./config/
 
 # Icon Backups
 # cp -r /home/roshi/.local/share/icons/* ./icons/

@@ -100,7 +100,7 @@ element alternate.active {
 }
 
 element selected {
-    background-color:               @accent;
+    background-color:               @on;
     text-color:                     @background;
     border:                  		0px;
     border-radius:                  0px;

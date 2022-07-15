@@ -125,6 +125,7 @@ COLOR_3 = "#fab387"
 COLOR_4 = "#091a32"
 COLOR_5 = "#1e1e2e"
 COLOR_6 = "#45475a"
+COLOR_7 = "#11111b"
 
 keys = [
 
@@ -259,7 +260,7 @@ layout_theme = {
 
 layouts = [
     layout.Columns(**layout_theme),
-    layout.MonadTall(**layout_theme, single_border_width=0),
+    layout.MonadTall(**layout_theme),
     layout.Max(),
     layout.Bsp(**layout_theme),
     layout.Floating(**layout_theme),
@@ -309,6 +310,7 @@ widget_mirror = [
         func=lambda: subprocess.check_output(
             scripts + "changebrightness").decode(),
         mouse_callbacks={
+            'Button1': lambda: qtile.cmd_spawn("gddccontrol", shell=True),
             'Button5': lambda: qtile.cmd_spawn(scripts + "changebrightness down", shell=True),
             'Button4': lambda: qtile.cmd_spawn(scripts + "changebrightness up", shell=True)}
     ),
@@ -320,6 +322,7 @@ widget_mirror = [
         func=lambda: subprocess.check_output(
             scripts + "changevolume").decode(),
         mouse_callbacks={
+            'Button1': lambda: qtile.cmd_spawn("pavucontrol", shell=True),
             'Button5': lambda: qtile.cmd_spawn(scripts + "changevolume down", shell=True),
             'Button2': lambda: qtile.cmd_spawn(scripts + "changevolume mute", shell=True),
             'Button4': lambda: qtile.cmd_spawn(scripts + "changevolume up", shell=True)}
@@ -410,13 +413,13 @@ widgets_1 = [
     widget.TextBox(
         **pl_defaults,
         fmt='',
-        background=COLOR_1,
+        background=COLOR_7,
         foreground=COLOR_4
     ),
     widget.Spacer(),
     widget.GenPollText(
         font='JetBrainsMono Medium Nerd Font',
-        fontsize='18',
+        fontsize='16',
         padding=3,
         func=custom_date,
         update_interval=1,
@@ -426,9 +429,9 @@ widgets_1 = [
         **pl_defaults,
         widgets=[
             widget.Spacer(length=5, background=COLOR_4),
-            widget.Systray(background=COLOR_4)
+            widget.Systray(background=COLOR_4, foreground=COLOR_4)
         ],
-        background=COLOR_1,
+        background=COLOR_7,
         foreground=COLOR_4,
         text_closed="",
         text_open=""),
@@ -491,13 +494,13 @@ widgets_2 = [
     widget.TextBox(
         **pl_defaults,
         fmt='',
-        background=COLOR_1,
+        background=COLOR_7,
         foreground=COLOR_4
     ),
     widget.Spacer(),
     widget.GenPollText(
         font='JetBrainsMono Medium Nerd Font',
-        fontsize='18',
+        fontsize='16',
         padding=3,
         func=custom_date,
         update_interval=1,
@@ -506,7 +509,7 @@ widgets_2 = [
     widget.TextBox(
         **pl_defaults,
         fmt='',
-        background=COLOR_1,
+        background=COLOR_7,
         foreground=COLOR_3,
     ),
 ] + widget_mirror
@@ -515,10 +518,10 @@ widgets_2 = [
 for monitor in range(monitors):
     if monitor == 0:
         screens.append(
-            Screen(top=bar.Bar(widgets_1, 30, background=COLOR_1, margin=0)))  # [4, 8, 0, 8]
+            Screen(top=bar.Bar(widgets_1, 30, background=COLOR_7, margin=0)))  # [4, 8, 0, 8]
     else:
         screens.append(
-            Screen(top=bar.Bar(widgets_2, 30, background=COLOR_1, margin=0)))
+            Screen(top=bar.Bar(widgets_2, 30, background=COLOR_7, margin=0)))
 
 
 # Drag floating layouts.
@@ -546,7 +549,8 @@ floating_layout = layout.Floating(float_rules=[
     Match(wm_type='dialog'),
     Match(wm_class='Conky'),
     Match(wm_class='Firefox'),
-    Match(wm_class='feh'),
+    Match(wm_class='pavucontrol'),
+    Match(wm_class='gddccontrol'),
     Match(wm_class='file_progress'),
     Match(wm_class='confirm'),
     Match(wm_class='dialog'),
